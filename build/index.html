@@ -1,0 +1,45 @@
+
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>doug-h</title>
+
+<style> 
+
+#content {
+  text-align: center;
+}
+
+#canvas.emscripten {
+  position: relative;
+  display: inline-block;
+  width: 90vw;
+  height: 400px;
+}
+</style>
+
+  <!-- Boilerplate to use emscripten -->
+  <script src="emscripten_common.js" defer></script>
+  <!-- Emscripten compilation output -->
+  <script src="main.js" defer></script>
+
+</head>
+
+<body>
+  <a href="index.html">
+    <h1 class="title">
+      Mellon Baller
+    </h1>
+  </a>
+
+  <div id="content">
+    <div id="loading-div"> Game Loading... </div>
+    <canvas class="emscripten" id="canvas"  oncontextmenu="event.preventDefault()" tabindex="-1"></canvas>
+  </div>
+
+
+</body>
+</html>
