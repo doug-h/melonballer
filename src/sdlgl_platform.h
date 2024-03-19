@@ -11,11 +11,23 @@
 struct sdlgl_state {
   int width, height;
 
-  SDL_Window *window;
-  const Uint8 *keyboard;
+  SDL_Window  *window;
+  const Uint8 *keyb;
 
-  GLuint prog_sphere;
-  GLuint vao_sphere, vbo_sphere;
+  GLuint prog_fruit;
+  GLuint vao_fruit;
+  GLuint vbo_sphere;
+  GLint  sphere_num_verts;
+  GLuint vbo_fruit_instances;
+
+  GLuint prog_box;
+  GLuint vao_box;
+  GLuint vbo_box;
+  GLint  box_num_verts;
+
+  arena memory;
+
+  vec3f camera_pos;
 
   melon_state game;
 };
