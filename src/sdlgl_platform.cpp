@@ -22,7 +22,7 @@
  * num tris  == 2 * ndivs_u*ndivs_v
  */
 
-void make_UV_sphere_mesh_verts(iZ ndivs_u, iZ ndivs_v, vec3f *verts,
+void make_UV_sphere_mesh_verts(iZ ndivs_u, iZ ndivs_v, vec3 *verts,
                                arena *mem_temp) {
   ASSERT(ndivs_u > 2);
   ASSERT(ndivs_v > 0);
@@ -54,17 +54,17 @@ void make_UV_sphere_mesh_verts(iZ ndivs_u, iZ ndivs_v, vec3f *verts,
   *verts++ = {0.0f, 0.0f, vcos[ndivs_v + 1]};
 }
 
-void make_UV_sphere_tris(iZ ndivs_u, iZ ndivs_v, vec3f *tris, arena *mem_temp) {
+void make_UV_sphere_tris(iZ ndivs_u, iZ ndivs_v, vec3 *tris, arena *mem_temp) {
   arena scratch = *mem_temp;
   // TODO - Triangle strips? Not worth the effort?
 
-  int    num_verts = 2 + ndivs_u * ndivs_v;
-  vec3f *verts     = arena_push<vec3f>(&scratch, num_verts);
+  int num_verts = 2 + ndivs_u * ndivs_v;
+  vec3 *verts = arena_push<vec3>(&scratch, num_verts);
   make_UV_sphere_mesh_verts(ndivs_u, ndivs_v, verts, &scratch);
 
   // Top fan
   for (int u = 0; u < ndivs_u; ++u) {
-    int i0  = 1;
+    int i0 = 1;
     *tris++ = verts[0];
     *tris++ = verts[i0 + (u + 1) % ndivs_u];
     *tris++ = verts[i0 + u];
@@ -76,10 +76,10 @@ void make_UV_sphere_tris(iZ ndivs_u, iZ ndivs_v, vec3f *tris, arena *mem_temp) {
       int u0 = 1 + v * ndivs_u;
       int u1 = 1 + (v + 1) * ndivs_u;
 
-      int c0  = u0 + u;
-      int c1  = u0 + (u + 1) % ndivs_u;
-      int c2  = u1 + u;
-      int c3  = u1 + (u + 1) % ndivs_u;
+      int c0 = u0 + u;
+      int c1 = u0 + (u + 1) % ndivs_u;
+      int c2 = u1 + u;
+      int c3 = u1 + (u + 1) % ndivs_u;
       *tris++ = verts[c0];
       *tris++ = verts[c1];
       *tris++ = verts[c2];
@@ -91,14 +91,14 @@ void make_UV_sphere_tris(iZ ndivs_u, iZ ndivs_v, vec3f *tris, arena *mem_temp) {
 
   // Bot fan
   for (int u = 0; u < ndivs_u; ++u) {
-    int i0  = num_verts - 1 - ndivs_u;
+    int i0 = num_verts - 1 - ndivs_u;
     *tris++ = verts[i0 + u];
     *tris++ = verts[i0 + ((u + 1) % ndivs_u)];
     *tris++ = verts[num_verts - 1];
   }
 }
 
-void make_box_tris(float w, float d, float h, float t, vec3f *tris,
+void make_box_tris(float w, float d, float h, float t, vec3 *tris,
                    arena *mem_temp) {
   // clang-format off
   /*
@@ -113,14 +113,14 @@ void make_box_tris(float w, float d, float h, float t, vec3f *tris,
    *  +===========> x
    */
 
-  vec3f a0(-w/2, -d/2, -h/2);
-  vec3f a1(+w/2, -d/2, -h/2);
-  vec3f a2(-w/2, +d/2, -h/2);
-  vec3f a3(+w/2, +d/2, -h/2);
-  vec3f a4(-w/2, -d/2, +h/2);
-  vec3f a5(+w/2, -d/2, +h/2);
-  vec3f a6(-w/2, +d/2, +h/2);
-  vec3f a7(+w/2, +d/2, +h/2);
+  vec3 a0(-w/2, -d/2, -h/2);
+  vec3 a1(+w/2, -d/2, -h/2);
+  vec3 a2(-w/2, +d/2, -h/2);
+  vec3 a3(+w/2, +d/2, -h/2);
+  vec3 a4(-w/2, -d/2, +h/2);
+  vec3 a5(+w/2, -d/2, +h/2);
+  vec3 a6(-w/2, +d/2, +h/2);
+  vec3 a7(+w/2, +d/2, +h/2);
 
   *tris++ = a0; *tris++ = a1; *tris++ = a2;
   *tris++ = a1; *tris++ = a2; *tris++ = a3;
@@ -138,7 +138,7 @@ void make_box_tris(float w, float d, float h, float t, vec3f *tris,
   *tris++ = a0; *tris++ = a6; *tris++ = a4;
 
   // Normals
-  vec3f x(1,0,0); vec3f y(0,1,0); vec3f z(0,0,1);
+  vec3 x(1,0,0); vec3 y(0,1,0); vec3 z(0,0,1);
 
   *tris++ = -z; *tris++ = -z; *tris++ = -z;
   *tris++ = -z; *tris++ = -z; *tris++ = -z;
@@ -159,12 +159,12 @@ void make_box_tris(float w, float d, float h, float t, vec3f *tris,
 
 GLuint compile_shader(const char *vertex_shader, const char *fragment_shader) {
   GLuint vertex, fragment;
-  vertex   = glCreateShader(GL_VERTEX_SHADER);
+  vertex = glCreateShader(GL_VERTEX_SHADER);
   fragment = glCreateShader(GL_FRAGMENT_SHADER);
   glShaderSource(vertex, 1, &vertex_shader, nullptr);
   glShaderSource(fragment, 1, &fragment_shader, nullptr);
 
-  int  success;
+  int success;
   char infoLog[512];
   glCompileShader(vertex);
   glGetShaderiv(vertex, GL_COMPILE_STATUS, &success);
@@ -197,23 +197,22 @@ GLuint compile_shader(const char *vertex_shader, const char *fragment_shader) {
   return ID;
 }
 
-void upload_fruit_instances(sdlgl_state *s, fruit *f, int num_fruit) {
+void upload_fruit_instances(sdlgl_state *s, fruit_body *f, int num_fruit) {
   glBindBuffer(GL_ARRAY_BUFFER, s->vbo_fruit_instances);
-  glBufferData(GL_ARRAY_BUFFER, num_fruit * (iZ)sizeof(fruit), f,
+  glBufferData(GL_ARRAY_BUFFER, num_fruit * (iZ)sizeof(fruit_body), f,
                GL_STATIC_DRAW);
 }
 
 void draw_fruit(sdlgl_state *s, int num_fruit) {
-  mat4f proj_mat = glm::perspective(
+  mat4 proj_mat = glm::perspective(
       glm::radians(69.0f), (float)s->width / (float)s->height, 0.1f, 1000.0f);
-  mat4f view_mat  = glm::lookAt(s->camera_pos, vec3f(0, 0, 1), vec3f(0, 0, 1));
-  mat4f model_mat = glm::mat4(1.0f);
+  mat4 view_mat = glm::lookAt(s->camera_pos, vec3(0, 0, 1), vec3(0, 0, 1));
 
-  mat4f pvm = proj_mat * view_mat * model_mat;
+  mat4 pv = proj_mat * view_mat;
 
   glUseProgram(s->prog_fruit);
-  GLint loc_pvm = glGetUniformLocation(s->prog_fruit, "pvm");
-  glUniformMatrix4fv(loc_pvm, 1, GL_FALSE, glm::value_ptr(pvm));
+  GLint loc_pvm = glGetUniformLocation(s->prog_fruit, "pv");
+  glUniformMatrix4fv(loc_pvm, 1, GL_FALSE, glm::value_ptr(pv));
 
   glBindVertexArray(s->vao_fruit);
   glBindBuffer(GL_ARRAY_BUFFER, s->vbo_fruit_instances);
@@ -236,14 +235,14 @@ void draw_fruit(sdlgl_state *s, int num_fruit) {
 }
 
 void draw_box(sdlgl_state *s) {
-  mat4f proj_mat = glm::perspective(
+  mat4 proj_mat = glm::perspective(
       glm::radians(69.0f), (float)s->width / (float)s->height, 0.1f, 1000.0f);
-  mat4f view_mat = glm::lookAt(s->camera_pos, vec3f(0, 0, 1), vec3f(0, 0, 1));
-  mat4f vt       = glm::translate(mat4f(1.0f), vec3f(0, 0, 1));
+  mat4 view_mat = glm::lookAt(s->camera_pos, vec3(0, 0, 1), vec3(0, 0, 1));
+  mat4 vt = glm::translate(mat4(1.0f), vec3(0, 0, 1));
 
-  mat4f model_mat = glm::mat4(1.0f);
+  mat4 model_mat = glm::mat4(1.0f);
 
-  mat4f pvm = proj_mat * view_mat * vt * model_mat;
+  mat4 pvm = proj_mat * view_mat * vt * model_mat;
 
   glUseProgram(s->prog_box);
   GLint loc_pvm = glGetUniformLocation(s->prog_box, "pvm");
@@ -322,17 +321,33 @@ void sdlgl_init(sdlgl_state *s, int width, int height, arena memory) {
     glGenBuffers(1, &sphere_mesh_vbo);
     glBindBuffer(GL_ARRAY_BUFFER, sphere_mesh_vbo);
     {
-      glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat),
-                            (void *)0);
+      glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(vec3), (void *)0);
       glEnableVertexAttribArray(0);
       glVertexAttribDivisor(0, 0);
     }
     glGenBuffers(1, &fruit_instance_vbo);
     glBindBuffer(GL_ARRAY_BUFFER, fruit_instance_vbo);
     {
-      glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(fruit), (void *)0);
+      uZ pos_offset =
+          offsetof(fruit_body, body) + offsetof(rigidbody, position);
+      glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(fruit_body),
+                            (void *)pos_offset);
       glEnableVertexAttribArray(1);
       glVertexAttribDivisor(1, 1);
+
+      uZ ori_offset =
+          offsetof(fruit_body, body) + offsetof(rigidbody, orientation);
+      for (u32 i = 0; i < 3; ++i) {
+        glVertexAttribPointer(2 + i, 3, GL_FLOAT, GL_FALSE, sizeof(fruit_body),
+                              (void *)(ori_offset + i * sizeof(vec3)));
+        glEnableVertexAttribArray(2 + i);
+        glVertexAttribDivisor(2 + i, 1);
+      }
+
+      glVertexAttribIPointer(5, 1, GL_INT, sizeof(fruit_body),
+                             (void *)offsetof(fruit_body, id));
+      glEnableVertexAttribArray(5);
+      glVertexAttribDivisor(5, 1);
     }
     glBindBuffer(GL_ARRAY_BUFFER, 0);
   }
@@ -348,7 +363,7 @@ void sdlgl_init(sdlgl_state *s, int width, int height, arena memory) {
   GLuint box_program = compile_shader(box_vert_code, box_frag_code);
   glUseProgram(box_program);
 
-  int    box_num_tris = 10;
+  int box_num_tris = 10;
   GLuint box_mesh_vao;
   GLuint box_mesh_vbo;
   glGenVertexArrays(1, &box_mesh_vao);
@@ -370,8 +385,8 @@ void sdlgl_init(sdlgl_state *s, int width, int height, arena memory) {
   glBindVertexArray(0);
 
   {
-    arena  scratch = memory;
-    vec3f *tris    = arena_push<vec3f>(&scratch, 3 * sphere_num_tris);
+    arena scratch = memory;
+    vec3 *tris = arena_push<vec3>(&scratch, 3 * sphere_num_tris);
     make_UV_sphere_tris(ndu, ndv, tris, &scratch);
 
     printf("Generating fruit with %i tris,%i verts\n", sphere_num_tris,
@@ -385,9 +400,9 @@ void sdlgl_init(sdlgl_state *s, int width, int height, arena memory) {
   }
 
   {
-    arena  scratch = memory;
-    vec3f *tris    = arena_push<vec3f>(&scratch, 6 * box_num_tris);
-    make_box_tris(2, 2, 2, 0.3f, tris, &scratch);
+    arena scratch = memory;
+    vec3 *tris = arena_push<vec3>(&scratch, 6 * box_num_tris);
+    make_box_tris(BOX_WIDTH, BOX_DEPTH, BOX_HEIGHT, 0.3f, tris, &scratch);
 
     glBindVertexArray(box_mesh_vao);
     glBindBuffer(GL_ARRAY_BUFFER, box_mesh_vbo);
@@ -404,26 +419,26 @@ void sdlgl_init(sdlgl_state *s, int width, int height, arena memory) {
   melon_state game{};
   melon_init(&game, &memory);
 
-  s->width  = width;
+  s->width = width;
   s->height = height;
 
   s->window = window;
-  s->keyb   = SDL_GetKeyboardState(0);
+  s->keyb = SDL_GetKeyboardState(0);
 
-  s->prog_fruit          = fruit_program;
-  s->vao_fruit           = sphere_mesh_vao;
-  s->vbo_sphere          = sphere_mesh_vbo;
-  s->sphere_num_verts    = sphere_num_tris * 3;
+  s->prog_fruit = fruit_program;
+  s->vao_fruit = sphere_mesh_vao;
+  s->vbo_sphere = sphere_mesh_vbo;
+  s->sphere_num_verts = sphere_num_tris * 3;
   s->vbo_fruit_instances = fruit_instance_vbo;
 
-  s->prog_box      = box_program;
-  s->vao_box       = box_mesh_vao;
-  s->vbo_box       = box_mesh_vbo;
+  s->prog_box = box_program;
+  s->vao_box = box_mesh_vao;
+  s->vbo_box = box_mesh_vbo;
   s->box_num_verts = box_num_tris * 3;
 
   s->memory = memory;
 
-  s->camera_pos = vec3f(0, -2, 1);
+  s->camera_pos = vec3(0, -2, 1);
 
   s->game = game;
 }
@@ -432,6 +447,9 @@ void process_event_queue(sdlgl_state *s, arena *mem) {
   SDL_Event e;
   while (SDL_PollEvent(&e)) {
     switch (e.type) {
+    case SDL_QUIT: {
+      exit(0);
+    } break;
     case SDL_MOUSEMOTION: {
       melon_mousemotion(&s->game);
     } break;
@@ -452,8 +470,8 @@ void process_event_queue(sdlgl_state *s, arena *mem) {
 
   float target_L = L - axisFB / 10.0f;
 
-  vec3f tang = vec3f(-s->camera_pos.y, s->camera_pos.x, 0) / L;
-  s->camera_pos += (axisLR * tang + axisUD * vec3f(0, 0, 1)) * 0.1f;
+  vec3 tang = vec3(-s->camera_pos.y, s->camera_pos.x, 0) / L;
+  s->camera_pos += (axisLR * tang + axisUD * vec3(0, 0, 1)) * 0.1f;
   s->camera_pos *= target_L / glm::length(s->camera_pos);
 }
 
@@ -464,9 +482,7 @@ void sdlgl_loop(sdlgl_state *s) {
   renderer_input stuff_to_upload;
   melon_tick(&s->game, &stuff_to_upload, &frame_memory);
 
-  if (stuff_to_upload.needs_reupload) {
-    upload_fruit_instances(s, stuff_to_upload.fruit, stuff_to_upload.num_fruit);
-  }
+  upload_fruit_instances(s, stuff_to_upload.fruit, stuff_to_upload.num_fruit);
 
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   draw_fruit(s, stuff_to_upload.num_fruit);

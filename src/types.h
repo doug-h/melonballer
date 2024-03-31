@@ -11,8 +11,10 @@
 #include <glm/ext/matrix_clip_space.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-typedef glm::vec3 vec3f;
-typedef glm::mat4 mat4f;
+typedef glm::vec3 vec3;
+typedef glm::vec4 vec4;
+typedef glm::mat3 mat3;
+typedef glm::mat4 mat4;
 
 #define ASSERT(c) assert((c))
 
@@ -33,11 +35,6 @@ typedef int16_t   i16;
 typedef int32_t   i32;
 typedef int64_t   i64;
 typedef ptrdiff_t iZ;
-
-typedef float  f32;
-typedef double f64;
-static_assert(sizeof(float) == 4);
-static_assert(sizeof(double) == 8);
 
 uLL operator""_KB(uLL s) { return s << 10; }
 uLL operator""_MB(uLL s) { return s << 20; }

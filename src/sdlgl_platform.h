@@ -9,7 +9,8 @@
 #include <GLES3/gl3platform.h>
 
 struct sdlgl_state {
-  int width, height;
+  int width;
+  int height;
 
   SDL_Window  *window;
   const Uint8 *keyb;
@@ -27,7 +28,7 @@ struct sdlgl_state {
 
   arena memory;
 
-  vec3f camera_pos;
+  vec3 camera_pos;
 
   melon_state game;
 };
